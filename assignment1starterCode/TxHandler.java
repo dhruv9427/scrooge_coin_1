@@ -1,12 +1,26 @@
+import org.omg.CORBA.PUBLIC_MEMBER;
+
+import java.nio.ByteBuffer;
+import java.security.PublicKey;
+import java.util.ArrayList;
+
 public class TxHandler {
 
+    public UTXOPool uPool;
+    public UTXO utxo;
+    public Transaction tx1;
+    public Crypto crypto;
+    public PublicKey pk;
     /**
      * Creates a public ledger whose current UTXOPool (collection of unspent transaction outputs) is
      * {@code utxoPool}. This should make a copy of utxoPool by using the UTXOPool(UTXOPool uPool)
      * constructor.
      */
+
     public TxHandler(UTXOPool utxoPool) {
-        // IMPLEMENT THIS
+        utxoPool = this.uPool;
+        isValidTx(tx1);
+        handleTxs(tx1[]);
     }
 
     /**
@@ -19,8 +33,26 @@ public class TxHandler {
      *     values; and false otherwise.
      */
     public boolean isValidTx(Transaction tx) {
-        // IMPLEMENT THIS
-        // Doing
+        ArrayList<Transaction.Output> outData = new ArrayList<Transaction.Output>();
+        ArrayList<Transaction.Input> inData = new ArrayList<Transaction.Input>();
+        ArrayList<Byte> msg = new ArrayList<Byte>();
+
+        for (int i = 0;i < tx.numOutputs();i++)
+        {
+            tx.getInput(i);
+            tx.getOutput(i);
+            outData.add(tx.getOutput(i));
+            inData.add(tx.getInput(i));
+        }
+
+        if (crypto.verifySignature() == true && tx.numOutputs() > 0 && outData.size() ==  inData.size() && outData == inData)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     /**
